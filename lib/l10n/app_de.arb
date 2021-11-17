@@ -1,0 +1,17 @@
+{
+  "loadingError": "Authentifizierung fehlgeschlagen. Versuchen Sie, die App neuzustarten oder neuzuinstallieren.",
+  "filters": "Deine Filter",
+  "noFilters": "Keine Filter gefunden!",
+  "addFilter": "Filter hinzufügen",
+  "from": "Von",
+  "to": "zu",
+  "name": "Name",
+  "sourcePlaylist": "Quell-Playlist",
+  "targetPlaylist": "Ziel-Playlist",
+  "choosePlaylist": "Playlist auswählen",
+  "choosePlaylistDescription": "Klicken Sie hier um eine Playlist auszuwählen.",
+  "songs": "Lieder",
+  "newPlaylist": "Neue Playlist",
+  "genres": "Genres",
+  "confirm": "Bestätigen"
+}

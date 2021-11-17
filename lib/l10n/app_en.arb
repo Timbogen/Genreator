@@ -1,0 +1,17 @@
+{
+  "loadingError": "Authentication failed! Try to restart or reinstall the application.",
+  "filters": "Your Filters",
+  "noFilters": "No filters found!",
+  "addFilter": "Add Filter",
+  "from": "From",
+  "to": "to",
+  "name": "Name",
+  "sourcePlaylist": "Source Playlist",
+  "targetPlaylist": "Target Playlist",
+  "choosePlaylist": "Choose Playlist",
+  "choosePlaylistDescription": "Click here to choose a playlist.",
+  "songs": "Songs",
+  "newPlaylist": "New Playlist",
+  "genres": "Genres",
+  "confirm": "Confirm"
+}

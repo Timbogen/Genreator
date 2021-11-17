@@ -1,0 +1,70 @@
+name: genreator
+description: App for filtering spotify playlists
+
+# The following line prevents the package from being accidentally published to pub.dev
+publish_to: 'none'
+
+# Version/Build number
+version: 1.0.0+1
+
+# SDK
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+# The application's dependencies
+dependencies:
+  # Flutter sdk
+  flutter:
+    sdk: flutter
+
+  # Flutter i18n
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
+
+  # Cupertino icons font
+  cupertino_icons: ^1.0.2
+
+  # Http requests module
+  http: 0.13.4
+
+  # OAuth2 for spotify authentication
+  oauth2_client: 2.3.0
+
+  # Shared preferences used for saving client data
+  shared_preferences: 2.0.8
+
+  # Configuration module used for storing the client id and secret
+  global_configuration: ^2.0.0-nullsafety.1
+
+# The application's dev dependencies
+dev_dependencies:
+  # Flutter packages
+  flutter_test:
+    sdk: flutter
+
+  # Flutter linter
+  flutter_lints: ^1.0.0
+
+  # Launcher icons used for generating the app's launcher
+  flutter_launcher_icons: ^0.9.2
+
+# Config for "flutter_launcher_icons"
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon.png"
+  adaptive_icon_background: "#191414"
+
+# Flutter cfg
+flutter:
+  # Material design dependencies
+  uses-material-design: true
+
+  # Required for i18n
+  generate: true
+
+  # The assets (images etc.)
+  assets:
+    - assets/
+    - assets/cfg/
