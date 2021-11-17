@@ -23,6 +23,17 @@ class FilterModel {
     source = json['source'] ?? '';
     target = json['target'] ?? '';
     image = json['image'] ?? '';
-    genres = json['genres'].forEach((genre) => genres.add(genre));
+    json['genres'].forEach((genre) => genres.add(genre));
+  }
+
+  /// Convert data to json object
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['name'] = name;
+    map['source'] = source;
+    map['target'] = target;
+    map['image'] = image;
+    map['genres'] = genres;
+    return map;
   }
 }

@@ -3,8 +3,6 @@
   "filters": "Your Filters",
   "noFilters": "No filters found!",
   "addFilter": "Add Filter",
-  "from": "From",
-  "to": "to",
   "name": "Name",
   "sourcePlaylist": "Source Playlist",
   "targetPlaylist": "Target Playlist",
@@ -13,5 +11,26 @@
   "songs": "Songs",
   "newPlaylist": "New Playlist",
   "genres": "Genres",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "aboutFilter": "About The Filter",
+  "aboutLong": "Filters the tracks of the playlist \"{playlistOne}\" and adds it to \"{playlistTwo}\".",
+  "@aboutLong": {
+    "placeholders":{
+      "playlistOne": {},
+      "playlistTwo": {}
+    }
+  },
+  "aboutShort": "From \"{playlistOne}\" to \"{playlistTwo}\"",
+  "@aboutShort": {
+    "placeholders":{
+      "playlistOne": {},
+      "playlistTwo": {}
+    }
+  },
+  "startFilter": "Starting The Filter",
+  "startDescription": "By starting the filter, the app starts loading the required data. This can take a while. As soon as the data finished loading, you will be able to configure and start the filter. Those configurations will be saved for future runs.",
+  "start": "Start",
+  "deleteFilter": "Delete Filter",
+  "deleteFilterDescription": "Delete the filter with the configurations. Playlists will remain.",
+  "delete": "Delete"
 }

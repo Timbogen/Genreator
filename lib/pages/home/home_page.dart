@@ -43,8 +43,12 @@ class _HomePageState extends State<HomePage> {
             ..._filterService.filters.map(
               (filter) => GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: () =>
-                    Navigator.of(context).push(MaterialPageRoute(builder: (builder) => FilterPage(filter: filter))),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (builder) => FilterPage(
+                    filter: filter,
+                    onDelete: () => setState(() => _filterService.removeFilter(filter)),
+                  ),
+                )),
                 child: Column(
                   children: [
                     Row(
@@ -65,12 +69,10 @@ class _HomePageState extends State<HomePage> {
                               style: Theme.of(context).textTheme.headline4,
                             ),
                             const SizedBox(height: 4),
-                            Text(
-                              '${AppLocalizations.of(context)!.from} '
-                              '${_spotifyService.playlists[filter.source]?.name ?? ''} '
-                              '${AppLocalizations.of(context)!.to} '
-                              '${_spotifyService.playlists[filter.target]?.name ?? ''}',
-                            ),
+                            Text(AppLocalizations.of(context)!.aboutShort(
+                              _spotifyService.playlists[filter.source]?.name ?? '',
+                              _spotifyService.playlists[filter.target]?.name ?? '',
+                            )),
                           ],
                         ),
                       ],

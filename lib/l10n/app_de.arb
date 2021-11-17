@@ -3,8 +3,6 @@
   "filters": "Deine Filter",
   "noFilters": "Keine Filter gefunden!",
   "addFilter": "Filter hinzufügen",
-  "from": "Von",
-  "to": "zu",
   "name": "Name",
   "sourcePlaylist": "Quell-Playlist",
   "targetPlaylist": "Ziel-Playlist",
@@ -13,5 +11,26 @@
   "songs": "Lieder",
   "newPlaylist": "Neue Playlist",
   "genres": "Genres",
-  "confirm": "Bestätigen"
+  "confirm": "Bestätigen",
+  "aboutFilter": "Über den Filter",
+  "aboutLong": "Filtert die Lieder aus der Playlist \"{playlistOne}\" und fügt sie \"{playlistTwo}\" hinzu.",
+  "@aboutLong": {
+    "placeholders":{
+      "playlistOne": {},
+      "playlistTwo": {}
+    }
+  },
+  "aboutShort": "Von \"{playlistOne}\" zu \"{playlistTwo}\"",
+  "@aboutShort": {
+    "placeholders":{
+      "playlistOne": {},
+      "playlistTwo": {}
+    }
+  },
+  "startFilter": "Den Filter starten",
+  "startDescription": "Durch das starten werden alle benötigten Daten geladen. Dies kann länger dauern. Sobald die Daten geladen sind haben Sie die Möglichkeit, den Filter zu konfigurieren und zu starten. Die weiteren Konfiguration werden für zukünftige Ausführungen gespeichert.",
+  "start": "Start",
+  "deleteFilter": "Filter Löschen",
+  "deleteFilterDescription": "Filter und zugehörige Konfigurationen werden gelöscht. Playlisten bleiben erhalten.",
+  "delete": "Löschen"
 }

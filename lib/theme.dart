@@ -10,7 +10,7 @@ class GenColors {
   /// Black for background
   static const black = Color(0xFF191414);
   /// Grey tone for cards etc.
-  static const grey = Color(0xFF2A2424);
+  static const grey = Color(0xFF3B3232);
   /// Red for errors
   static const red = Color(0xFFB91D1D);
 }

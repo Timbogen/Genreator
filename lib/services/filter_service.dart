@@ -17,7 +17,7 @@ class FilterService {
   static const _filtersKey = 'filters';
 
   /// The existing filters
-  var _filters = <FilterModel>[];
+  final _filters = <FilterModel>[];
 
   /// The existing filter models
   List<FilterModel> get filters {
@@ -28,16 +28,23 @@ class FilterService {
   Future<void> init() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonData = sharedPreferences.getString(_filtersKey);
-    if (jsonData != null) _filters = jsonDecode(jsonData).map((filter) => FilterModel.fromJson(filter));
+    if (jsonData != null) jsonDecode(jsonData).forEach((filter) => _filters.add(FilterModel.fromJson(filter)));
   }
 
   /// Adds a new filter
   void addFilter(FilterModel filter) {
     _filters.add(filter);
+    _save();
+  }
+
+  /// Removes a filter
+  void removeFilter(FilterModel filter) {
+    _filters.remove(filter);
+    _save();
   }
 
   /// Saves the current filters
-  Future<void> save() async {
+  Future<void> _save() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString(_filtersKey, jsonEncode(_filters));
   }
