@@ -13,6 +13,9 @@ class PlaylistModel {
   /// The available genres
   Set<String> genres = {};
 
+  /// The available artists
+  Set<String> artists = {};
+
   /// The link to the image
   String image = '';
 

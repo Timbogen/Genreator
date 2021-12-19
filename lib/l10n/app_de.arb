@@ -1,7 +1,9 @@
 {
   "loadingError": "Authentifizierung fehlgeschlagen. Versuchen Sie, die App neuzustarten oder neuzuinstallieren.",
+  "unknownError": "Etwas ist schief gelaufen. Erneut versuchen...",
+  "loadPlaylistError": "Deine Playlists konnten nicht geladen werden!",
   "filters": "Deine Filter",
-  "noFilters": "Keine Filter gefunden!",
+  "noFilters": "Legen Sie einen Filter an",
   "addFilter": "Filter hinzufügen",
   "name": "Name",
   "sourcePlaylist": "Quell-Playlist",
@@ -10,8 +12,8 @@
   "choosePlaylistDescription": "Klicken Sie hier um eine Playlist auszuwählen.",
   "songs": "Lieder",
   "newPlaylist": "Neue Playlist",
-  "genres": "Genres",
   "confirm": "Bestätigen",
+  "cancel": "Abbrechen",
   "aboutFilter": "Über den Filter",
   "aboutLong": "Filtert die Lieder aus der Playlist \"{playlistOne}\" und fügt sie \"{playlistTwo}\" hinzu.",
   "@aboutLong": {
@@ -28,9 +30,46 @@
     }
   },
   "startFilter": "Den Filter starten",
-  "startDescription": "Durch das starten werden alle benötigten Daten geladen. Dies kann länger dauern. Sobald die Daten geladen sind haben Sie die Möglichkeit, den Filter zu konfigurieren und zu starten. Die weiteren Konfiguration werden für zukünftige Ausführungen gespeichert.",
+  "startDescription": "Speziell bei großen Playlisten kann der erste Start sehr lange dauern. Konfiguration die anschließend vergenommen werden bleiben für den nächsten Start erhalten.",
   "start": "Start",
   "deleteFilter": "Filter Löschen",
   "deleteFilterDescription": "Filter und zugehörige Konfigurationen werden gelöscht. Playlisten bleiben erhalten.",
-  "delete": "Löschen"
+  "delete": "Löschen",
+  "configureFilter": "\"{filter}\" konfigurieren",
+  "@configureFilter": {
+    "placeholders":{
+      "filter": {}
+    }
+  },
+  "release": "Release Jahr",
+  "genres": "Genres aufnehmen",
+  "genresDescription": "Aktuell sind {amount} Genres aufgenommen.",
+  "@genresDescription": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "artists": "Künstler ausschließen",
+  "artistsDescription": "Nur gefilterte Künstler werden angezeigt.",
+  "tracks": "Lieder ausschließen",
+  "tracksDescription": "Nur gefilterte Lieder werden angezeigt.",
+  "minReleaseYear": "Minimales Release Jahr",
+  "maxReleaseYear": "Maximales Release Jahr",
+  "clearPlaylist": "Playlist leeren",
+  "clearPlaylistDescription": "Playlist vor der Ausführung des Filters leeren",
+  "configureAndRunFilter": "Filter konfigurieren & ausführen",
+  "runFilter": "Filter ausführen",
+  "runFilterDescription": "Sind Sie sicher? Dadurch wird die Playlist \"{playlist}\" angepasst!",
+  "@runFilterDescription": {
+    "placeholders": {
+      "playlist": {}
+    }
+  },
+  "search": "Suche",
+  "onlyShowTriggered": "Nur aktive Elemente anzeigen",
+  "triggerVisible": "Alle sichtbaren Elemente umschalten",
+  "unknownGenre": "Unbekanntes Genre",
+  "failedToClear": "Leeren der Playlist fehlgeschlagen!",
+  "failedToAdd": "Hinzufügen der gefilterten Songs fehlgeschlagen!",
+  "successfullyAdded": "Die gefilterten Songs wurden erfolgreich hinzugefügt!"
 }

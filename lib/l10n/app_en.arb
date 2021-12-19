@@ -1,7 +1,9 @@
 {
   "loadingError": "Authentication failed! Try to restart or reinstall the application.",
+  "unknownError": "Something went wrong. Trying again...",
+  "loadPlaylistError": "Couldn't load your playlists!",
   "filters": "Your Filters",
-  "noFilters": "No filters found!",
+  "noFilters": "Start by adding a filter",
   "addFilter": "Add Filter",
   "name": "Name",
   "sourcePlaylist": "Source Playlist",
@@ -10,8 +12,8 @@
   "choosePlaylistDescription": "Click here to choose a playlist.",
   "songs": "Songs",
   "newPlaylist": "New Playlist",
-  "genres": "Genres",
   "confirm": "Confirm",
+  "cancel": "Cancel",
   "aboutFilter": "About The Filter",
   "aboutLong": "Filters the tracks of the playlist \"{playlistOne}\" and adds it to \"{playlistTwo}\".",
   "@aboutLong": {
@@ -28,9 +30,46 @@
     }
   },
   "startFilter": "Starting The Filter",
-  "startDescription": "By starting the filter, the app starts loading the required data. This can take a while. As soon as the data finished loading, you will be able to configure and start the filter. Those configurations will be saved for future runs.",
+  "startDescription": "Especially for big playlists the first start can take a while. Following configurations will be saved.",
   "start": "Start",
   "deleteFilter": "Delete Filter",
   "deleteFilterDescription": "Delete the filter with the configurations. Playlists will remain.",
-  "delete": "Delete"
+  "delete": "Delete",
+  "configureFilter": "Configure \"{filter}\"",
+  "@configureFilter": {
+    "placeholders":{
+      "filter": {}
+    }
+  },
+  "release": "Release Year",
+  "genres": "Include Genres",
+  "genresDescription": "Currently {amount} genres are included.",
+  "@genresDescription": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "artists": "Exclude Artists",
+  "artistsDescription": "Only the filtered artists will be shown.",
+  "tracks": "Exclude Tracks",
+  "tracksDescription": "Only the filtered tracks will be shown.",
+  "minReleaseYear": "Minimum Release Year",
+  "maxReleaseYear": "Maximum Release Year",
+  "clearPlaylist": "Clear Playlist",
+  "clearPlaylistDescription": "Clear the playlist before running the filter",
+  "configureAndRunFilter": "Configure & Run Filter",
+  "runFilter": "Run Filter",
+  "runFilterDescription": "Are you sure? This will modify the playlist \"{playlist}\"!",
+  "@runFilterDescription": {
+    "placeholders": {
+      "playlist": {}
+    }
+  },
+  "search": "Search",
+  "onlyShowTriggered": "Only show active elements",
+  "triggerVisible": "Trigger all visible items",
+  "unknownGenre": "Unknown Genre",
+  "failedToClear": "Failed to clear the playlist!",
+  "failedToAdd": "Failed to add the filtered songs!",
+  "successfullyAdded": "Successfully added the filtered songs to the playlist!"
 }

@@ -25,8 +25,8 @@ dependencies:
   # Cupertino icons font
   cupertino_icons: ^1.0.2
 
-  # Http requests module
-  http: 0.13.4
+  # Http requests
+  dio: ^4.0.5-beta1
 
   # OAuth2 for spotify authentication
   oauth2_client: 2.3.0
@@ -36,6 +36,9 @@ dependencies:
 
   # Configuration module used for storing the client id and secret
   global_configuration: ^2.0.0-nullsafety.1
+
+  # The carousel number picker
+  numberpicker: 2.1.1
 
 # The application's dev dependencies
 dev_dependencies:

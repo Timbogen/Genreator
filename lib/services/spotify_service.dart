@@ -1,14 +1,16 @@
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:math';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:genreator/models/general/paylist_model.dart';
 import 'package:genreator/models/general/track_model.dart';
 import 'package:genreator/models/spotify/api_artist_model.dart';
 import 'package:genreator/models/spotify/api_playlists_model.dart';
 import 'package:genreator/models/spotify/api_tracks_model.dart';
+import 'package:genreator/utility.dart';
 import 'package:global_configuration/global_configuration.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:oauth2_client/oauth2_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,6 +47,9 @@ class SpotifyService {
   /// The key for the refresh token
   static const _refreshTokenKey = 'refresh_token';
 
+  /// The key prefix for artist data
+  static const _artistPrefix = 'artist_data:';
+
   /// Client id
   var _clientID = '';
 
@@ -63,7 +68,9 @@ class SpotifyService {
       _clientID = GlobalConfiguration().get('clientID');
       _clientSecret = GlobalConfiguration().get('clientSecret');
     } catch (_) {}
-    if (_clientID == '' || _clientSecret == '') log('ATTENTION: Make sure to add a valid "assets/cfg/config.json"!');
+    if (_clientID == '' || _clientSecret == '') {
+      if (kDebugMode) print('ATTENTION: Make sure to add a valid "assets/cfg/config.json"!');
+    }
   }
 
   /// The playlists for the current user
@@ -114,15 +121,18 @@ class SpotifyService {
     body['redirect_uri'] = 'de.weichwarenprojekt.genreator://oauth2redirect';
 
     // Request the token
-    final tokenRes = await http.post(Uri.parse('https://accounts.spotify.com/api/token'), headers: headers, body: body);
+    final tokenRes = await _fetchContent(
+      method: 'POST',
+      url: 'https://accounts.spotify.com/api/token',
+      data: body,
+      headers: headers,
+    );
     if (tokenRes.statusCode == 200) {
-      final data = jsonDecode(tokenRes.body);
-
       // Get the token and save the refresh token
-      _token = data['access_token'];
-      if (data[_refreshTokenKey] != null) {
+      _token = tokenRes.data['access_token'];
+      if (tokenRes.data[_refreshTokenKey] != null) {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-        sharedPreferences.setString(_refreshTokenKey, data[_refreshTokenKey]);
+        sharedPreferences.setString(_refreshTokenKey, tokenRes.data[_refreshTokenKey]);
       }
     }
     return tokenRes.statusCode == 200;
@@ -130,75 +140,227 @@ class SpotifyService {
 
   /// Queries the playlists for the current user
   Future<void> loadPlaylists() async {
-    final playlistsRes = await _getContent('https://api.spotify.com/v1/me/playlists');
+    final playlistsRes = await _fetchContent(
+      method: 'GET',
+      url: 'https://api.spotify.com/v1/me/playlists',
+    );
     if (playlistsRes.statusCode == 200) {
-      final playlistsData = ApiPlaylistsModel.fromJson(jsonDecode(playlistsRes.body));
+      final playlistsData = ApiPlaylistsModel.fromJson(playlistsRes.data);
 
       // Map the playlists via their id
       for (var apiPlaylist in (playlistsData.items ?? <ApiPlaylistModel>[])) {
         playlists[apiPlaylist.id ?? ''] = apiPlaylist;
       }
+    } else {
+      showSnackBar(translation().loadPlaylistError);
     }
   }
 
-  /// Loads more detailed info about the playlist
+  /// Loads more detailed info about the playlist via the given playlist [id]
   /// (the tracks with genres and release date)
-  Future<PlaylistModel> getPlaylistInfo(ApiPlaylistModel apiPlaylist) async {
-    final tracks = <String, List<ApiTrackEntryModel>>{};
-    var offset = 0;
-
+  Future<PlaylistModel> loadPlaylistInfo(BuildContext context, String id, Function(double) onProgress) async {
     // Load all tracks and map them to their artists
-    final total = apiPlaylist.tracks?.total ?? 0;
-    for (; offset < total; offset += 100) {
-      final tracksRes = await _getContent('${apiPlaylist.tracks?.href}?offset=$offset&limit=100');
-      if (tracksRes.statusCode == 200) {
-        final apiTracks = ApiTracksModel.fromJson(jsonDecode(tracksRes.body));
-        apiTracks.items?.forEach((track) {
-          final artistHref = track.track?.artists?[0].href ?? '';
-          if (artistHref != '') {
-            if (!tracks.containsKey(artistHref)) {
-              tracks[artistHref] = [];
-            }
-            tracks[artistHref]?.add(track);
-          }
-        });
+    final tracks = <String, List<ApiTrackEntryModel>>{};
+    final apiTracks = await loadTracks(id);
+    for (var track in apiTracks) {
+      final artistHref = track.track?.artists?[0].href ?? '';
+      if (artistHref != '') {
+        if (!tracks.containsKey(artistHref)) {
+          tracks[artistHref] = [];
+        }
+        tracks[artistHref]?.add(track);
       }
     }
 
-    // Load the artist information
+    // Prepare the playlist model
+    final apiPlaylist = playlists[id];
     final playlist = PlaylistModel();
-    playlist.id = apiPlaylist.id ?? '';
-    playlist.name = apiPlaylist.name ?? '';
-    playlist.owner = apiPlaylist.owner?.displayName ?? '';
-    if (apiPlaylist.images?.isNotEmpty ?? false) playlist.image = apiPlaylist.images?[0].url ?? '';
-    for (var artistRef in tracks.keys) {
-      final tracksRes = await _getContent(artistRef);
-      if (tracksRes.statusCode == 200) {
-        final apiArtist = ApiArtistModel.fromJson(jsonDecode(tracksRes.body));
-        final genres = apiArtist.genres ?? <String>[];
-        playlist.genres.addAll(genres);
+    playlist.id = apiPlaylist?.id ?? '';
+    playlist.name = apiPlaylist?.name ?? '';
+    playlist.owner = apiPlaylist?.owner?.displayName ?? '';
+    playlist.image = getApiPlaylistImage(apiPlaylist);
 
-        // Prepare the tracks
-        tracks[artistRef]?.forEach((apiTrack) {
-          final track = TrackModel();
-          track.id = apiTrack.track?.id ?? '';
-          try {
-            track.releaseDate = DateTime.parse(apiTrack.track?.album?.releaseDate ?? '');
-          } catch (_) {}
-          track.genres.addAll(genres);
-          playlist.tracks.add(track);
-        });
-      }
+    // Iterate through the artist
+    var counter = 0;
+    var artistResFutures = <Future>[];
+    for (var artistRef in tracks.keys) {
+      // Load the data
+      artistResFutures.add(_loadArtist(artistRef).then((apiArtist) {
+        // Update the progress
+        counter++;
+        onProgress(counter / tracks.length);
+
+        // Parse the response
+        if (apiArtist != null) {
+          // Get the genres for the artist
+          var genres = apiArtist.genres ?? <String>[];
+          genres = genres.map((genre) => genre.capitalizeSentence).toList();
+          if (genres.isEmpty) genres.add(translation().unknownGenre);
+          playlist.artists.add(apiArtist.name ?? '');
+          playlist.genres.addAll(genres);
+
+          // Prepare the tracks
+          tracks[artistRef]?.forEach((apiTrack) {
+            final track = TrackModel();
+            track.uri = apiTrack.track?.uri ?? '';
+            track.name = apiTrack.track?.name ?? '';
+            track.artist = apiArtist.name ?? '';
+            try {
+              track.releaseDate = DateTime.parse(apiTrack.track?.album?.releaseDate ?? '');
+            } catch (_) {}
+            track.genres.addAll(genres);
+            playlist.tracks.add(track);
+          });
+        }
+      }));
     }
+
+    // Wait for all futures and signalize finish
+    await Future.wait(artistResFutures);
+    onProgress(1.0);
+
     return playlist;
   }
 
-  /// Queries content from the API via the given [url]
-  Future<Response> _getContent(String url) {
-    var headers = <String, String>{};
-    headers['Authorization'] = 'Bearer $_token';
-    headers['Content-Type'] = 'application/json';
-    headers['Accept'] = 'application/json';
-    return http.get(Uri.parse(url), headers: headers);
+  /// Load the tracks for a given playlist [id]
+  Future<List<ApiTrackEntryModel>> loadTracks(String id) async {
+    final tracks = <ApiTrackEntryModel>[];
+
+    // Get the playlist information
+    final apiPlaylist = playlists[id];
+    final total = apiPlaylist?.tracks?.total ?? 0;
+
+    // Get the tracks packets of 100
+    var offset = 0;
+    var tracksResFutures = <Future>[];
+    for (; offset < total; offset += 100) {
+      tracksResFutures.add(_fetchContent(
+        method: 'GET',
+        url: '${apiPlaylist?.tracks?.href}?offset=$offset&limit=100',
+      ).then((tracksRes) {
+        if (tracksRes.statusCode == 200) {
+          final apiTracks = ApiTracksModel.fromJson(tracksRes.data);
+          final items = apiTracks.items;
+          if (items != null) tracks.addAll(items);
+        }
+      }));
+    }
+
+    // Wait for all responses
+    await Future.wait(tracksResFutures);
+    return tracks;
+  }
+
+  /// Loads the data for an artist with a given [artistRef]
+  Future<ApiArtistModel?> _loadArtist(String artistRef) async {
+    // Check if artist data was cached
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    final artistInfo = sharedPreferences.getString(_artistPrefix + artistRef) ?? '';
+    if (artistInfo != '') return ApiArtistModel.fromJson(jsonDecode(artistInfo));
+
+    // Request the artist data and cache it
+    final artistRes = await _fetchContent(
+      method: 'GET',
+      url: artistRef,
+    );
+    if (artistRes.statusCode == 200) {
+      sharedPreferences.setString(_artistPrefix + artistRef, jsonEncode(artistRes.data));
+      return ApiArtistModel.fromJson(artistRes.data);
+    }
+    return null;
+  }
+
+  /// Adds tracks to a playlist
+  Future<bool> addTracks(String id, List<String> tracks) async {
+    // Check whether there is something to add
+    if (tracks.isEmpty) return true;
+
+    // Add the tracks
+    bool success = true;
+    const maxPerRequest = 100;
+    for (int i = 0; i < tracks.length; i += maxPerRequest) {
+      final body = <String, dynamic>{
+        'uris': tracks.sublist(i, min(tracks.length, i + maxPerRequest)),
+        'position': 0,
+      };
+      final res = await _fetchContent(
+        method: 'POST',
+        url: 'https://api.spotify.com/v1/playlists/$id/tracks',
+        data: body,
+      );
+      success = success && res.statusCode == 201;
+    }
+    return success;
+  }
+
+  /// Removes tracks from a playlist
+  Future<bool> removeTracks(String id, List<String> tracks) async {
+    // Check whether there is something to add
+    if (tracks.isEmpty) return true;
+
+    // Remove tracks
+    bool success = true;
+    var preparedTracks = tracks.map((track) => {'uri': track}).toList();
+    const maxPerRequest = 100;
+    for (int i = 0; i < tracks.length; i += maxPerRequest) {
+      final body = <String, dynamic>{
+        'tracks': preparedTracks.sublist(i, min(preparedTracks.length, i + maxPerRequest)),
+      };
+      final res = await _fetchContent(
+        method: 'DELETE',
+        url: 'https://api.spotify.com/v1/playlists/$id/tracks',
+        data: body,
+      );
+      success = success && res.statusCode == 200;
+    }
+    return success;
+  }
+
+  /// Fetches content with a given [method] from the API via the given [url]
+  Future<Response> _fetchContent({
+    required String method,
+    required String url,
+    dynamic data,
+    Map<String, String>? headers,
+  }) async {
+    // Prepare the headers
+    headers ??= <String, String>{};
+    headers['Authorization'] ??= 'Bearer $_token';
+    headers['Content-Type'] ??= 'application/json';
+    headers['Accept'] ??= 'application/json';
+
+    // Execute the request
+    try {
+      return await Dio().fetch(RequestOptions(path: url, headers: headers, data: data, method: method));
+    } catch (e) {
+      // Check whether dio threw the error
+      if (e is DioError) {
+        final response = e.response;
+        if (response != null) {
+          // Token expired
+          if (response.statusCode == 401) {
+            await init();
+          }
+          // Return response or retry if it was 429
+          else if (response.statusCode != 429) {
+            if (kDebugMode) showSnackBar(response.data);
+            return response;
+          }
+        }
+      }
+      // Show unknown error
+      else {
+        showSnackBar(translation().unknownError);
+        if (kDebugMode) print(e);
+      }
+
+      // Retry in 5 seconds
+      return Future.delayed(const Duration(seconds: 5)).then((_) => _fetchContent(
+            method: method,
+            url: url,
+            data: data,
+            headers: headers,
+          ));
+    }
   }
 }
