@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:genreator/models/spotify/api_playlists_model.dart';
 import 'package:genreator/theme.dart';
 
 /// Global key for using common services without the need of having
@@ -14,13 +13,6 @@ extension CapExtension on String {
 
   /// Capitalizes the first character of every word
   String get capitalizeSentence => split(' ').map((str) => str.capitalizeWord).join(' ');
-}
-
-/// Try to get image of api playlist
-String getApiPlaylistImage(ApiPlaylistModel? playlist) {
-  String url = '';
-  if (playlist?.images?.isNotEmpty ?? false) url = playlist?.images?[0].url ?? '';
-  return url;
 }
 
 /// Shows snack bar

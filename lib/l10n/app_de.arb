@@ -2,6 +2,8 @@
   "loadingError": "Authentifizierung fehlgeschlagen. Versuchen Sie, die App neuzustarten oder neuzuinstallieren.",
   "unknownError": "Etwas ist schief gelaufen. Erneut versuchen...",
   "loadPlaylistError": "Deine Playlists konnten nicht geladen werden!",
+  "likedSongs": "Lieblingssongs",
+  "you": "Du",
   "filters": "Deine Filter",
   "noFilters": "Legen Sie einen Filter an",
   "addFilter": "Filter hinzufügen",

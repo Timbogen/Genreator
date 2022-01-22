@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:genreator/models/general/paylist_model.dart';
+import 'package:genreator/models/general/playlist_info_model.dart';
 import 'package:genreator/models/general/track_model.dart';
 import 'package:genreator/models/spotify/api_artist_model.dart';
 import 'package:genreator/models/spotify/api_playlists_model.dart';
@@ -44,6 +44,9 @@ class SpotifyService {
     'user-read-private',
   ];
 
+  /// The id for the liked songs 'playlist'
+  static const likedSongsID = 'genreator_liked_songs';
+
   /// The key for the refresh token
   static const _refreshTokenKey = 'refresh_token';
 
@@ -60,7 +63,7 @@ class SpotifyService {
   var _token = '';
 
   /// The playlists for the current user
-  final _playlists = <String, ApiPlaylistModel>{};
+  final _playlists = <String, PlaylistModel>{};
 
   /// Private constructor for singleton
   SpotifyService._privateConstructor() {
@@ -74,7 +77,7 @@ class SpotifyService {
   }
 
   /// The playlists for the current user
-  Map<String, ApiPlaylistModel> get playlists {
+  Map<String, PlaylistModel> get playlists {
     return _playlists;
   }
 
@@ -140,16 +143,37 @@ class SpotifyService {
 
   /// Queries the playlists for the current user
   Future<void> loadPlaylists() async {
+    // Load playlists and liked songs
     final playlistsRes = await _fetchContent(
       method: 'GET',
       url: 'https://api.spotify.com/v1/me/playlists',
     );
-    if (playlistsRes.statusCode == 200) {
-      final playlistsData = ApiPlaylistsModel.fromJson(playlistsRes.data);
+    final likedSongsRes = await _fetchContent(
+      method: 'GET',
+      url: 'https://api.spotify.com/v1/me/tracks',
+    );
+    if (playlistsRes.statusCode == 200 && likedSongsRes.statusCode == 200) {
+      // Map liked Songs
+      final likedSongsData = ApiTracksModel.fromJson(likedSongsRes.data);
+      final likedSongs = PlaylistModel();
+      likedSongs.id = likedSongsID;
+      likedSongs.name = translation().likedSongs;
+      likedSongs.owner = translation().you;
+      likedSongs.total = likedSongsData.total ?? 0;
+      likedSongs.tracksHref = 'https://api.spotify.com/v1/me/tracks';
+      playlists[likedSongs.id] = likedSongs;
 
       // Map the playlists via their id
+      final playlistsData = ApiPlaylistsModel.fromJson(playlistsRes.data);
       for (var apiPlaylist in (playlistsData.items ?? <ApiPlaylistModel>[])) {
-        playlists[apiPlaylist.id ?? ''] = apiPlaylist;
+        final playlist = PlaylistModel();
+        playlist.id = apiPlaylist.id ?? '';
+        playlist.name = apiPlaylist.name ?? '';
+        playlist.owner = apiPlaylist.owner?.displayName ?? '';
+        playlist.total = apiPlaylist.tracks?.total ?? 0;
+        playlist.tracksHref = apiPlaylist.tracks?.href ?? '';
+        if (apiPlaylist.images?.isNotEmpty ?? false) playlist.image = apiPlaylist.images?[0].url ?? '';
+        playlists[playlist.id] = playlist;
       }
     } else {
       showSnackBar(translation().loadPlaylistError);
@@ -158,7 +182,7 @@ class SpotifyService {
 
   /// Loads more detailed info about the playlist via the given playlist [id]
   /// (the tracks with genres and release date)
-  Future<PlaylistModel> loadPlaylistInfo(BuildContext context, String id, Function(double) onProgress) async {
+  Future<PlaylistInfoModel> loadPlaylistInfo(BuildContext context, String id, Function(double) onProgress) async {
     // Load all tracks and map them to their artists
     final tracks = <String, List<ApiTrackEntryModel>>{};
     final apiTracks = await loadTracks(id);
@@ -173,12 +197,7 @@ class SpotifyService {
     }
 
     // Prepare the playlist model
-    final apiPlaylist = playlists[id];
-    final playlist = PlaylistModel();
-    playlist.id = apiPlaylist?.id ?? '';
-    playlist.name = apiPlaylist?.name ?? '';
-    playlist.owner = apiPlaylist?.owner?.displayName ?? '';
-    playlist.image = getApiPlaylistImage(apiPlaylist);
+    final playlist = PlaylistInfoModel();
 
     // Iterate through the artist
     var counter = 0;
@@ -227,16 +246,17 @@ class SpotifyService {
     final tracks = <ApiTrackEntryModel>[];
 
     // Get the playlist information
-    final apiPlaylist = playlists[id];
-    final total = apiPlaylist?.tracks?.total ?? 0;
+    final playlist = playlists[id];
+    final total = playlist?.total ?? 0;
 
-    // Get the tracks packets of 100
+    // Get the tracks in packets of 50
     var offset = 0;
+    const steps = 50;
     var tracksResFutures = <Future>[];
-    for (; offset < total; offset += 100) {
+    for (; offset < total; offset += steps) {
       tracksResFutures.add(_fetchContent(
         method: 'GET',
-        url: '${apiPlaylist?.tracks?.href}?offset=$offset&limit=100',
+        url: '${playlist?.tracksHref}?offset=$offset&limit=$steps',
       ).then((tracksRes) {
         if (tracksRes.statusCode == 200) {
           final apiTracks = ApiTracksModel.fromJson(tracksRes.data);

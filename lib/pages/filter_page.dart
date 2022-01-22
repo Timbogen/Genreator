@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:genreator/models/general/filter_model.dart';
-import 'package:genreator/models/general/paylist_model.dart';
+import 'package:genreator/models/general/playlist_info_model.dart';
 import 'package:genreator/pages/configure_filter_page.dart';
 import 'package:genreator/pages/loading_page.dart';
 import 'package:genreator/services/filter_service.dart';
@@ -122,8 +122,8 @@ class _FilterPageState extends State<FilterPage> {
                     MaterialPageRoute(
                       builder: (context) => ChoosePlaylistPage(
                         onSelection: (playlist) => setState(() {
-                          widget.filter.source = playlist.id ?? '';
-                          widget.filter.image = getApiPlaylistImage(playlist);
+                          widget.filter.source = playlist.id;
+                          widget.filter.image = playlist.image;
                           _filterService.save();
                         }),
                       ),
@@ -149,8 +149,9 @@ class _FilterPageState extends State<FilterPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChoosePlaylistPage(
+                        showLikedSongs: false,
                         onSelection: (playlist) => setState(() {
-                          widget.filter.target = playlist.id ?? '';
+                          widget.filter.target = playlist.id;
                           _filterService.save();
                         }),
                       ),
@@ -196,7 +197,7 @@ class _FilterPageState extends State<FilterPage> {
             onPressed: isValid()
                 ? () {
                     /// Load playlist info and then show configuration
-                    var playlistInfo = PlaylistModel();
+                    var playlistInfo = PlaylistInfoModel();
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (builder) => LoadingPage(
                         showProgress: true,

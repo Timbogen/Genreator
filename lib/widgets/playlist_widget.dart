@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:genreator/models/spotify/api_playlists_model.dart';
+import 'package:genreator/models/general/playlist_info_model.dart';
 import 'package:genreator/theme.dart';
 import 'package:genreator/utility.dart';
 import 'package:genreator/widgets/playlist_image_widget.dart';
@@ -7,7 +7,7 @@ import 'package:genreator/widgets/title_description_widget.dart';
 
 class PlaylistWidget extends StatelessWidget {
   /// The playlist that shall be displayed
-  final ApiPlaylistModel? playlist;
+  final PlaylistModel? playlist;
 
   /// The callback
   final Function onTap;
@@ -29,8 +29,8 @@ class PlaylistWidget extends StatelessWidget {
 
   /// Returns the description for the playlist
   String _getDescription(BuildContext context) {
-    if (playlist?.owner?.displayName != null) {
-      return '${playlist?.owner?.displayName} - ${playlist?.tracks?.total} ${translation().songs}';
+    if (playlist != null) {
+      return '${playlist?.owner} - ${playlist?.total} ${translation().songs}';
     }
     return translation().choosePlaylistDescription;
   }
@@ -49,11 +49,11 @@ class PlaylistWidget extends StatelessWidget {
               children: [
                 /// Preview Image
                 PlaylistImageWidget(
-                  image: getApiPlaylistImage(playlist),
+                  image: playlist?.image ?? '',
                   width: 64,
                   height: 64,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
 
                 /// Title and description
                 TitleDescriptionWidget(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:genreator/models/general/filter_model.dart';
-import 'package:genreator/models/general/paylist_model.dart';
+import 'package:genreator/models/general/playlist_info_model.dart';
 import 'package:genreator/pages/filter_list_page.dart';
 import 'package:genreator/services/filter_service.dart';
 import 'package:genreator/services/spotify_service.dart';
@@ -18,7 +18,7 @@ class ConfigureFilterPage extends StatefulWidget {
   final FilterModel filter;
 
   /// The information about the playlist
-  final PlaylistModel playlistInfo;
+  final PlaylistInfoModel playlistInfo;
 
   /// Constructor
   const ConfigureFilterPage({Key? key, required this.filter, required this.playlistInfo}) : super(key: key);

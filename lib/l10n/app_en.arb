@@ -2,6 +2,8 @@
   "loadingError": "Authentication failed! Try to restart or reinstall the application.",
   "unknownError": "Something went wrong. Trying again...",
   "loadPlaylistError": "Couldn't load your playlists!",
+  "likedSongs": "Liked Songs",
+  "you": "You",
   "filters": "Your Filters",
   "noFilters": "Start by adding a filter",
   "addFilter": "Add Filter",

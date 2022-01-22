@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:genreator/models/general/filter_model.dart';
-import 'package:genreator/models/general/paylist_model.dart';
+import 'package:genreator/models/general/playlist_info_model.dart';
 import 'package:genreator/services/spotify_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,7 +57,7 @@ class FilterService {
   }
 
   /// Run a [filter] with a given [playlistInfo] of the source playlist
-  Future<void> run(FilterModel filter, PlaylistModel playlistInfo) async {
+  Future<void> run(FilterModel filter, PlaylistInfoModel playlistInfo) async {
     // Save and run the filter
     save();
     final filteredTracks = filter.applyFilter(playlistInfo).map((track) => track.uri).toList();

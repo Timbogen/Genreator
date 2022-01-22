@@ -1,4 +1,4 @@
-import 'package:genreator/models/general/paylist_model.dart';
+import 'package:genreator/models/general/playlist_info_model.dart';
 import 'package:genreator/models/general/track_model.dart';
 
 class FilterModel {
@@ -76,7 +76,7 @@ class FilterModel {
   }
 
   /// Applies the filter to a given playlist
-  List<TrackModel> applyFilter(PlaylistModel playlist, {bool excludeArtists = true, bool excludeTracks = true}) {
+  List<TrackModel> applyFilter(PlaylistInfoModel playlist, {bool excludeArtists = true, bool excludeTracks = true}) {
     return playlist.tracks.where((track) {
       // Check the release year
       if (minReleaseYearEnabled || maxReleaseYearEnabled) {
