@@ -86,6 +86,36 @@ class _ConfigureFilterPageState extends State<ConfigureFilterPage> with SingleTi
         children: [
           const SizedBox(height: paddingSmall),
 
+          /// Overview
+          Padding(
+            padding: sidePadding,
+            child: Card(
+                margin: EdgeInsets.zero,
+                color: GenColors.grey,
+                child: Padding(
+                  padding: const EdgeInsets.all(paddingSmall),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.info),
+                          const SizedBox(width: 8),
+                          Text(
+                            translation().filterInfo(_getFilteredTracks().length),
+                            style: Theme.of(context).textTheme.headline3,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        translation().filterInfoDescription,
+                      ),
+                    ],
+                  ),
+                )),
+          ),
+          const SizedBox(height: paddingSmall),
+
           /// Minimum release year
           Padding(
             padding: sidePadding,
@@ -107,17 +137,17 @@ class _ConfigureFilterPageState extends State<ConfigureFilterPage> with SingleTi
           ),
           const SizedBox(height: 4.0),
           Center(
-              child: NumberPicker(
-                value: widget.filter.minReleaseYear,
-                axis: Axis.horizontal,
-                selectedTextStyle: TextStyle(
-                  fontSize: 22.0,
-                  color: widget.filter.minReleaseYearEnabled ? GenColors.green : GenColors.lightGrey,
-                ),
-                minValue: 0,
-                maxValue: maxYear,
-                onChanged: (value) => setState(() => widget.filter.minReleaseYear = value),
+            child: NumberPicker(
+              value: widget.filter.minReleaseYear,
+              axis: Axis.horizontal,
+              selectedTextStyle: TextStyle(
+                fontSize: 22.0,
+                color: widget.filter.minReleaseYearEnabled ? GenColors.green : GenColors.lightGrey,
               ),
+              minValue: 0,
+              maxValue: maxYear,
+              onChanged: (value) => setState(() => widget.filter.minReleaseYear = value),
+            ),
           ),
           const SizedBox(height: 8.0),
 
@@ -158,13 +188,15 @@ class _ConfigureFilterPageState extends State<ConfigureFilterPage> with SingleTi
 
           /// Include genres
           InkWell(
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (builder) => FilterListPage(
-                title: translation().genres,
-                items: widget.playlistInfo.genres.toList(),
-                includedItems: widget.filter.includedGenres,
-              ),
-            )),
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(
+                  builder: (builder) => FilterListPage(
+                    title: translation().includedGenres,
+                    items: widget.playlistInfo.genres.toList(),
+                    includedItems: widget.filter.includedGenres,
+                  ),
+                ))
+                .then((_) => setState(() {})),
             child: Padding(
               padding: defaultPadding,
               child: Row(
@@ -172,8 +204,70 @@ class _ConfigureFilterPageState extends State<ConfigureFilterPage> with SingleTi
                 children: [
                   /// The title and description
                   TitleDescriptionWidget(
-                    title: translation().genres,
-                    description: translation().genresDescription(widget.filter.includedGenres.length),
+                    title: translation().includedGenres,
+                    description: translation().includedGenresDescription(widget.filter.includedGenres.length),
+                  ),
+                  const Spacer(),
+
+                  /// The arrow
+                  const Icon(Icons.navigate_next, size: 32)
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8.0),
+
+          /// Include artists
+          InkWell(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(
+                  builder: (builder) => FilterListPage(
+                    title: translation().includedArtists,
+                    items: widget.playlistInfo.artists.toList(),
+                    includedItems: widget.filter.includedArtists,
+                  ),
+                ))
+                .then((_) => setState(() {})),
+            child: Padding(
+              padding: defaultPadding,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  /// The title and description
+                  TitleDescriptionWidget(
+                    title: translation().includedArtists,
+                    description: translation().includedArtistsDescription(widget.filter.includedArtists.length),
+                  ),
+                  const Spacer(),
+
+                  /// The arrow
+                  const Icon(Icons.navigate_next, size: 32)
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8.0),
+
+          /// Include tracks
+          InkWell(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(
+                  builder: (builder) => FilterListPage(
+                    title: translation().includedTracks,
+                    items: widget.playlistInfo.tracks.map((track) => track.displayName).toList(),
+                    includedItems: widget.filter.includedTracks,
+                  ),
+                ))
+                .then((_) => setState(() {})),
+            child: Padding(
+              padding: defaultPadding,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  /// The title and description
+                  TitleDescriptionWidget(
+                    title: translation().includedTracks,
+                    description: translation().includedTracksDescription(widget.filter.includedTracks.length),
                   ),
                   const Spacer(),
 
@@ -187,13 +281,15 @@ class _ConfigureFilterPageState extends State<ConfigureFilterPage> with SingleTi
 
           /// Exclude artists
           InkWell(
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (builder) => FilterListPage(
-                title: translation().artists,
-                items: _getFilteredArtists(),
-                includedItems: widget.filter.excludedArtists,
-              ),
-            )),
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(
+                  builder: (builder) => FilterListPage(
+                    title: translation().excludedArtists,
+                    items: _getFilteredArtists(),
+                    includedItems: widget.filter.excludedArtists,
+                  ),
+                ))
+                .then((_) => setState(() {})),
             child: Padding(
               padding: defaultPadding,
               child: Row(
@@ -201,8 +297,8 @@ class _ConfigureFilterPageState extends State<ConfigureFilterPage> with SingleTi
                 children: [
                   /// The title and description
                   TitleDescriptionWidget(
-                    title: translation().artists,
-                    description: translation().artistsDescription,
+                    title: translation().excludedArtists,
+                    description: translation().excludedArtistsDescription,
                   ),
                   const Spacer(),
 
@@ -216,13 +312,15 @@ class _ConfigureFilterPageState extends State<ConfigureFilterPage> with SingleTi
 
           /// Exclude tracks
           InkWell(
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (builder) => FilterListPage(
-                title: translation().tracks,
-                items: _getFilteredTracks(),
-                includedItems: widget.filter.excludedTracks,
-              ),
-            )),
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(
+                  builder: (builder) => FilterListPage(
+                    title: translation().excludedTracks,
+                    items: _getFilteredTracks(),
+                    includedItems: widget.filter.excludedTracks,
+                  ),
+                ))
+                .then((_) => setState(() {})),
             child: Padding(
               padding: defaultPadding,
               child: Row(
@@ -230,8 +328,8 @@ class _ConfigureFilterPageState extends State<ConfigureFilterPage> with SingleTi
                 children: [
                   /// The title and description
                   TitleDescriptionWidget(
-                    title: translation().tracks,
-                    description: translation().tracksDescription,
+                    title: translation().excludedTracks,
+                    description: translation().excludedTracksDescription,
                   ),
                   const Spacer(),
 

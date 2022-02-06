@@ -29,6 +29,12 @@ class FilterModel {
   /// The included genres (contains the "name" of the genres)
   var includedGenres = <String>{};
 
+  /// The included artists (contains the "name" of the artists)
+  var includedArtists = <String>{};
+
+  /// The included tracks (contains the "displayName" of the artists)
+  var includedTracks = <String>{};
+
   /// The excluded artists (contains the "name" of the artists)
   var excludedArtists = <String>{};
 
@@ -52,6 +58,8 @@ class FilterModel {
     maxReleaseYearEnabled = json['maxReleaseYearEnabled'];
     maxReleaseYear = json['maxReleaseYear'];
     includedGenres = Set.from(json['includedGenres']);
+    includedArtists = Set.from(json['includedArtists']);
+    includedTracks = Set.from(json['includedTracks']);
     excludedArtists = Set.from(json['excludedArtists']);
     excludedTracks = Set.from(json['excludedTracks']);
     clearBefore = json['clearBefore'] ?? false;
@@ -69,6 +77,8 @@ class FilterModel {
     map['maxReleaseYearEnabled'] = maxReleaseYearEnabled;
     map['maxReleaseYear'] = maxReleaseYear;
     map['includedGenres'] = includedGenres.toList();
+    map['includedArtists'] = includedArtists.toList();
+    map['includedTracks'] = includedTracks.toList();
     map['excludedArtists'] = excludedArtists.toList();
     map['excludedTracks'] = excludedTracks.toList();
     map['clearBefore'] = clearBefore;
@@ -86,8 +96,10 @@ class FilterModel {
         if (maxReleaseYearEnabled && maxReleaseYear < releaseDate.year) return false;
       }
 
-      // Check if the at least on genre of the track is included
-      if (!track.genres.any((genre) => includedGenres.contains(genre))) return false;
+      // Check if the genre, the artists or the track itself is included
+      if (!track.genres.any((genre) => includedGenres.contains(genre)) &&
+          !includedArtists.contains(track.artist) &&
+          !includedTracks.contains(track.displayName)) return false;
 
       // Check if the artist is excluded
       if (excludeArtists && excludedArtists.contains(track.artist)) return false;

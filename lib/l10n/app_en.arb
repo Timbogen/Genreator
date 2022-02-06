@@ -44,17 +44,31 @@
     }
   },
   "release": "Release Year",
-  "genres": "Include Genres",
-  "genresDescription": "Currently {amount} genres are included.",
-  "@genresDescription": {
+  "includedGenres": "Include Genres",
+  "includedGenresDescription": "Currently {amount} genres are included.",
+  "@includedGenresDescription": {
     "placeholders": {
       "amount": {}
     }
   },
-  "artists": "Exclude Artists",
-  "artistsDescription": "Only the filtered artists will be shown.",
-  "tracks": "Exclude Tracks",
-  "tracksDescription": "Only the filtered tracks will be shown.",
+  "includedArtists": "Include Artists",
+  "includedArtistsDescription": "Currently {amount} artists are included.",
+  "@includedArtistsDescription": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "includedTracks": "Include Tracks",
+  "includedTracksDescription": "Currently {amount} tracks are included.",
+  "@includedTracksDescription": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "excludedArtists": "Exclude Artists",
+  "excludedArtistsDescription": "Only the filtered artists will be shown.",
+  "excludedTracks": "Exclude Tracks",
+  "excludedTracksDescription": "Only the filtered tracks will be shown.",
   "minReleaseYear": "Minimum Release Year",
   "maxReleaseYear": "Maximum Release Year",
   "clearPlaylist": "Clear Playlist",
@@ -67,6 +81,13 @@
       "playlist": {}
     }
   },
+  "filterInfo": "Filter currently applies to {amount} tracks",
+  "@filterInfo": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "filterInfoDescription": "The filters are applied in the same order they are being listed.",
   "search": "Search",
   "onlyShowTriggered": "Only show active elements",
   "triggerVisible": "Trigger all visible items",

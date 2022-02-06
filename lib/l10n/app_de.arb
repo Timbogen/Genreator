@@ -44,17 +44,31 @@
     }
   },
   "release": "Release Jahr",
-  "genres": "Genres aufnehmen",
-  "genresDescription": "Aktuell sind {amount} Genres aufgenommen.",
-  "@genresDescription": {
+  "includedGenres": "Genres aufnehmen",
+  "includedGenresDescription": "Aktuell sind {amount} Genres aufgenommen.",
+  "@includedGenresDescription": {
     "placeholders": {
       "amount": {}
     }
   },
-  "artists": "Künstler ausschließen",
-  "artistsDescription": "Nur gefilterte Künstler werden angezeigt.",
-  "tracks": "Lieder ausschließen",
-  "tracksDescription": "Nur gefilterte Lieder werden angezeigt.",
+  "includedArtists": "Künstler aufnehmen",
+  "includedArtistsDescription": "Aktuell sind {amount} Künstler aufgenommen.",
+  "@includedArtistsDescription": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "includedTracks": "Lieder aufnehmen",
+  "includedTracksDescription": "Aktuell sind {amount} Lieder aufgenommen.",
+  "@includedTracksDescription": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "excludedArtists": "Künstler ausschließen",
+  "excludedArtistsDescription": "Nur gefilterte Künstler werden angezeigt.",
+  "excludedTracks": "Lieder ausschließen",
+  "excludedTracksDescription": "Nur gefilterte Lieder werden angezeigt.",
   "minReleaseYear": "Minimales Release Jahr",
   "maxReleaseYear": "Maximales Release Jahr",
   "clearPlaylist": "Playlist leeren",
@@ -67,6 +81,13 @@
       "playlist": {}
     }
   },
+  "filterInfo": "Filter trifft auf {amount} Lieder zu",
+  "@filterInfo": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "filterInfoDescription": "Die Filter werden in der gelisteten Reihenfolge angewendet.",
   "search": "Suche",
   "onlyShowTriggered": "Nur aktive Elemente anzeigen",
   "triggerVisible": "Alle sichtbaren Elemente umschalten",
